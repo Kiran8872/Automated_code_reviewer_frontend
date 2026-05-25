@@ -10,6 +10,7 @@ import {
 
 const ReviewResult = ({ review, originalCode, language, onBack }) => {
   const [copied, setCopied] = useState(false);
+  const [appliedFixes, setAppliedFixes] = useState(new Set());
   const [expandedSections, setExpandedSections] = useState({
     bugs: true,
     security: true,
@@ -43,11 +44,12 @@ const ReviewResult = ({ review, originalCode, language, onBack }) => {
     }
   };
 
-  const handleApplyIndividualFix = (originalSnippet, fixedSnippet) => {
+  const handleApplyIndividualFix = (originalSnippet, fixedSnippet, issueId) => {
     if (typeof window !== 'undefined' && window.dispatchEvent) {
       window.dispatchEvent(new CustomEvent('applyIndividualFix', { 
         detail: { originalSnippet, fixedSnippet } 
       }));
+      setAppliedFixes(prev => new Set(prev).add(issueId));
     }
   };
 
@@ -259,11 +261,12 @@ const ReviewResult = ({ review, originalCode, language, onBack }) => {
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-3 mt-4">
                         <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">Suggested Fix</span>
                         <button
-                          onClick={() => handleApplyIndividualFix(bug.originalSnippet, bug.fixedSnippet)}
-                          className="text-xs px-4 py-1.5 bg-primary-600 hover:bg-primary-500 text-white font-medium rounded-md transition-all flex items-center shadow-md hover:shadow-primary-500/50"
+                          onClick={() => handleApplyIndividualFix(bug.originalSnippet, bug.fixedSnippet, `bug-${idx}`)}
+                          disabled={appliedFixes.has(`bug-${idx}`)}
+                          className={`text-xs px-4 py-1.5 font-medium rounded-md transition-all flex items-center shadow-md ${appliedFixes.has(`bug-${idx}`) ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-primary-600 hover:bg-primary-500 text-white hover:shadow-primary-500/50'}`}
                         >
                           <Code2 className="w-3 h-3 mr-1.5" />
-                          Apply Fix
+                          {appliedFixes.has(`bug-${idx}`) ? 'Fix Applied' : 'Apply Fix'}
                         </button>
                       </div>
                       <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden font-mono text-[13px] leading-relaxed shadow-sm">
@@ -317,11 +320,12 @@ const ReviewResult = ({ review, originalCode, language, onBack }) => {
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-3 mt-4">
                         <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">Suggested Fix</span>
                         <button
-                          onClick={() => handleApplyIndividualFix(issue.originalSnippet, issue.fixedSnippet)}
-                          className="text-xs px-4 py-1.5 bg-primary-600 hover:bg-primary-500 text-white font-medium rounded-md transition-all flex items-center shadow-md hover:shadow-primary-500/50"
+                          onClick={() => handleApplyIndividualFix(issue.originalSnippet, issue.fixedSnippet, `sec-${idx}`)}
+                          disabled={appliedFixes.has(`sec-${idx}`)}
+                          className={`text-xs px-4 py-1.5 font-medium rounded-md transition-all flex items-center shadow-md ${appliedFixes.has(`sec-${idx}`) ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-primary-600 hover:bg-primary-500 text-white hover:shadow-primary-500/50'}`}
                         >
                           <Code2 className="w-3 h-3 mr-1.5" />
-                          Apply Fix
+                          {appliedFixes.has(`sec-${idx}`) ? 'Fix Applied' : 'Apply Fix'}
                         </button>
                       </div>
                       <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden font-mono text-[13px] leading-relaxed shadow-sm">
@@ -375,11 +379,12 @@ const ReviewResult = ({ review, originalCode, language, onBack }) => {
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-3 mt-4">
                         <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">Suggested Fix</span>
                         <button
-                          onClick={() => handleApplyIndividualFix(issue.originalSnippet, issue.fixedSnippet)}
-                          className="text-xs px-4 py-1.5 bg-primary-600 hover:bg-primary-500 text-white font-medium rounded-md transition-all flex items-center shadow-md hover:shadow-primary-500/50"
+                          onClick={() => handleApplyIndividualFix(issue.originalSnippet, issue.fixedSnippet, `perf-${idx}`)}
+                          disabled={appliedFixes.has(`perf-${idx}`)}
+                          className={`text-xs px-4 py-1.5 font-medium rounded-md transition-all flex items-center shadow-md ${appliedFixes.has(`perf-${idx}`) ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-primary-600 hover:bg-primary-500 text-white hover:shadow-primary-500/50'}`}
                         >
                           <Code2 className="w-3 h-3 mr-1.5" />
-                          Apply Fix
+                          {appliedFixes.has(`perf-${idx}`) ? 'Fix Applied' : 'Apply Fix'}
                         </button>
                       </div>
                       <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden font-mono text-[13px] leading-relaxed shadow-sm">
@@ -433,11 +438,12 @@ const ReviewResult = ({ review, originalCode, language, onBack }) => {
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-3 mt-4">
                         <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">Suggested Fix</span>
                         <button
-                          onClick={() => handleApplyIndividualFix(issue.originalSnippet, issue.fixedSnippet)}
-                          className="text-xs px-4 py-1.5 bg-primary-600 hover:bg-primary-500 text-white font-medium rounded-md transition-all flex items-center shadow-md hover:shadow-primary-500/50"
+                          onClick={() => handleApplyIndividualFix(issue.originalSnippet, issue.fixedSnippet, `prac-${idx}`)}
+                          disabled={appliedFixes.has(`prac-${idx}`)}
+                          className={`text-xs px-4 py-1.5 font-medium rounded-md transition-all flex items-center shadow-md ${appliedFixes.has(`prac-${idx}`) ? 'bg-gray-400 cursor-not-allowed text-white' : 'bg-primary-600 hover:bg-primary-500 text-white hover:shadow-primary-500/50'}`}
                         >
                           <Code2 className="w-3 h-3 mr-1.5" />
-                          Apply Fix
+                          {appliedFixes.has(`prac-${idx}`) ? 'Fix Applied' : 'Apply Fix'}
                         </button>
                       </div>
                       <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden font-mono text-[13px] leading-relaxed shadow-sm">
