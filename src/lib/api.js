@@ -17,13 +17,13 @@ export async function uploadCode(file) {
 }
 
 export async function getHealth() {
-  const res = await client.get('/health');
+  const res = await apiClient.get('/health');
   return res.data; // expected HealthResponse
 }
 
 export async function getAnalytics(days = 14) {
-  const res = await client.get(`/analytics?days=${days}`);
+  const res = await apiClient.get(`/analytics?days=${days}`);
   return res.data; // expected AnalyticsResponse
 }
 
-export default client;
+export default apiClient;
