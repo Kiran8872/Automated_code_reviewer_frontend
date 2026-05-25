@@ -37,13 +37,18 @@ const CodeReviewer = () => {
       const { originalSnippet, fixedSnippet } = e?.detail || {};
       if (typeof originalSnippet === 'string' && typeof fixedSnippet === 'string') {
         setCode((prevCode) => {
-          if (prevCode.includes(originalSnippet)) {
-            return prevCode.replace(originalSnippet, fixedSnippet);
+          const normalize = (s) => s.replace(/\r\n/g, '\n');
+          const normalizedPrev = normalize(prevCode);
+          const normalizedOriginal = normalize(originalSnippet);
+          const normalizedFixed = normalize(fixedSnippet);
+
+          if (normalizedPrev.includes(normalizedOriginal)) {
+            return normalizedPrev.replace(normalizedOriginal, normalizedFixed);
           } else {
             // Fallback: try removing leading/trailing whitespace from snippets
-            const trimmedOriginal = originalSnippet.trim();
-            if (trimmedOriginal && prevCode.includes(trimmedOriginal)) {
-               return prevCode.replace(trimmedOriginal, fixedSnippet.trim());
+            const trimmedOriginal = normalizedOriginal.trim();
+            if (trimmedOriginal && normalizedPrev.includes(trimmedOriginal)) {
+               return normalizedPrev.replace(trimmedOriginal, normalizedFixed.trim());
             }
             alert('Could not find the exact snippet in the editor. You may have to apply it manually.');
             return prevCode;
